@@ -4,19 +4,20 @@ const myProfile = () => {
   return axios.get(`/profile`);
 };
 
-const updateProfile = (body) => {
-  return axios.patch(`/profile`, { body });
+const updateProfile = (...body) => {
+  return axios.patch(`/profile`, { ...body });
 };
 
-const updateProfilePassword = (password, oldPassword) => {
+const updateProfilePassword = (password, oldPassword, ...body) => {
   return axios.patch(`/profile/password`, {
     password,
     old_password: oldPassword,
+    ...body,
   });
 };
 
-const uploadProfileAvatar = (avatar) => {
-  return axios.patch(`/profile/avatar`, { avatar });
+const uploadProfileAvatar = (avatar, ...body) => {
+  return axios.patch(`/profile/avatar`, { avatar, ...body });
 };
 
 const profileApi = {
