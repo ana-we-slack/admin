@@ -5,4 +5,13 @@ const instance = axios.create({
   headers: { Authorization: 'Bearer my-token' },
 });
 
+axios.interceptors.response.use(
+  (res) => {
+    return res.data;
+  },
+  (error) => {
+    console.log(error.toJSON());
+  }
+);
+
 export default instance;

@@ -2,15 +2,6 @@ import axios from '../axios';
 
 // authorization
 
-axios.interceptors.response.use(
-  (res) => {
-    return res.data;
-  },
-  (error) => {
-    console.log(error.toJSON());
-  }
-);
-
 const createAdmin = (body) => {
   return axios.post(`/admin`, { body });
 };
