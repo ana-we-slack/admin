@@ -20,6 +20,10 @@ const updateAdmin = (id, body) => {
   return axios.patch(`/admin/${id}`, { body });
 };
 
+const resetAdminPassword = (password, reset_password_token) => {
+  return axios.patch(`/admin/password`, { reset_password_token, password });
+};
+
 const deleteAdmin = (id) => {
   return axios.delete(`/admin/${id}`);
 };
@@ -31,6 +35,7 @@ const adminApi = {
   updateAdmin,
   getAdmins,
   searchAdmin,
+  resetAdminPassword,
 };
 
 export default adminApi;
