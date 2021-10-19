@@ -1,7 +1,5 @@
 import axios from '../axios';
 
-// authorization
-
 const createAdmin = (body) => {
   return axios.post(`/admin`, { body });
 };
@@ -20,6 +18,13 @@ const updateAdmin = (id, body) => {
   return axios.patch(`/admin/${id}`, { body });
 };
 
+const resetAdminPassword = (password, resetPasswordToken) => {
+  return axios.patch(`/admin/password`, {
+    reset_password_token: resetPasswordToken,
+    password,
+  });
+};
+
 const deleteAdmin = (id) => {
   return axios.delete(`/admin/${id}`);
 };
@@ -31,6 +36,7 @@ const adminApi = {
   updateAdmin,
   getAdmins,
   searchAdmin,
+  resetAdminPassword,
 };
 
 export default adminApi;
