@@ -20,8 +20,8 @@ const updateAdmin = (id, body) => {
   return axios.patch(`/admin/${id}`, { body });
 };
 
-const resetAdminPassword = (password, reset_password_token) => {
-  return axios.patch(`/admin/password`, { reset_password_token, password });
+const resetAdminPassword = (password, resetPasswordToken) => {
+  return axios.patch(`/admin/password`, { resetPasswordToken, password });
 };
 
 const deleteAdmin = (id) => {
