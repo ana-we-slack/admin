@@ -1,7 +1,7 @@
 import axios from '../axios';
 
 const createAdmin = (body) => {
-  return axios.post(`/admin`, { body });
+  return axios.post(`/admin`, body);
 };
 
 const searchAdmin = (searchTerm, options) => {
@@ -15,7 +15,7 @@ const getAdminById = (id) => {
 };
 
 const updateAdmin = (id, body) => {
-  return axios.patch(`/admin/${id}`, { body });
+  return axios.patch(`/admin/${id}`, body);
 };
 
 const resetAdminPassword = (password, resetPasswordToken) => {
