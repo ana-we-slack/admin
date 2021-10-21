@@ -11,30 +11,33 @@ import { IconButton, InputAdornment } from '@mui/material';
 import { useState } from 'react';
 import { VisibilityOff } from '@mui/icons-material';
 import Visibility from '@mui/icons-material/Visibility';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+
+const schema = yup.object({
+  email: yup.string().email().required(),
+  password: yup.string().min(8).max(32).required(),
+});
 
 export default function Login() {
-  const [values, setValues] = useState({
-    password: '',
-    showPassword: false,
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+    reset,
+  } = useForm({
+    resolver: yupResolver(schema),
   });
-
-  const handleChange = (prop) => (event) => {
-    setValues({ ...values, [prop]: event.target.value });
-  };
-  const handleClickShowPassword = () => {
-    setValues({
-      ...values,
-      showPassword: !values.showPassword,
-    });
+  const onSubmit = (data) => {
+    console.log(data);
+    reset();
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+  const [showPassword, setShowPassword] = useState(false);
+
+  const onPasswordIconClick = () => {
+    setShowPassword((showPassword) => !showPassword);
   };
 
   return (
@@ -48,12 +51,7 @@ export default function Login() {
     >
       <Container component="main" maxWidth="xs">
         <Box>
-          <Typography
-            component="subtitle"
-            variant="h5"
-            align="left"
-            color="black"
-          >
+          <Typography component="div" variant="h5" align="left" color="black">
             Sign in
           </Typography>
           <Typography
@@ -67,30 +65,36 @@ export default function Login() {
           </Typography>
           <Box
             component="form"
-            onSubmit={handleSubmit}
             noValidate
             sx={{ mt: 3 }}
+            onSubmit={handleSubmit(onSubmit)}
           >
             <TextField
+              error={!!errors.email}
+              helperText={errors.email?.message}
+              defaultValue=""
+              type="email"
+              {...register('email')}
               margin="normal"
               required
               fullWidth
               id="email"
               label="Email Address"
-              name="email"
               autoComplete="email"
               autoFocus
               color="success"
             />
             <TextField
-              value={values.password}
-              onChange={handleChange('password')}
-              type={values.showPassword ? 'text' : 'password'}
+              error={!!errors.password}
+              helperText={errors.password?.message}
+              defaultValue=""
+              {...register('password')}
+              type={showPassword ? 'text' : 'password'}
               InputProps={{
                 endAdornment: (
-                  <InputAdornment>
-                    <IconButton onClick={handleClickShowPassword}>
-                      {values.showPassword ? <VisibilityOff /> : <Visibility />}
+                  <InputAdornment position="end">
+                    <IconButton onClick={() => onPasswordIconClick()}>
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>
                 ),
@@ -98,7 +102,6 @@ export default function Login() {
               margin="normal"
               required
               fullWidth
-              name="password"
               label="Password"
               id="password"
               autoComplete="current-password"
@@ -107,7 +110,9 @@ export default function Login() {
             <Grid container>
               <Grid item xs>
                 <FormControlLabel
-                  control={<Checkbox value="remember" color="success" />}
+                  control={
+                    <Checkbox {...register('remember')} color="success" />
+                  }
                   label="Remember me"
                 />
               </Grid>
@@ -125,6 +130,7 @@ export default function Login() {
             </Grid>
 
             <Button
+              id="submit"
               color="success"
               type="submit"
               fullWidth
