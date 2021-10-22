@@ -1,11 +1,10 @@
-import Login from './pages/login';
-
+import AdminList from './pages/AdminList/AdminList';
 import { CssBaseline } from '@mui/material';
 function App() {
   return (
     <>
       <CssBaseline />
-      <Login />
+      <AdminList />
     </>
   );
 }
