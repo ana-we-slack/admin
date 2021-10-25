@@ -10,9 +10,15 @@ import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Button from '../../components/Button';
 import FilterListIcon from '@mui/icons-material/FilterList';
+import { useState } from 'react';
 
 export const EnhancedTableToolbar = (props) => {
   const { numSelected } = props;
+  const [query, updateQuery] = useState('');
+
+  function onSearch({ currentTarget }) {
+    updateQuery(currentTarget.value);
+  }
 
   return (
     <Toolbar
@@ -48,6 +54,9 @@ export const EnhancedTableToolbar = (props) => {
       ) : (
         <>
           <InputBase
+            onChange={onSearch}
+            value={query}
+            type="text"
             sx={{ flex: '1 1 33%' }}
             startAdornment={
               <IconButton type="submit" aria-label="search">
