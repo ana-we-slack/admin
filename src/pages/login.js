@@ -8,7 +8,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { IconButton, InputAdornment } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { VisibilityOff } from '@mui/icons-material';
 import Visibility from '@mui/icons-material/Visibility';
 import { useForm } from 'react-hook-form';
@@ -36,19 +36,16 @@ export default function Login() {
   } = useForm({
     resolver: yupResolver(schema),
   });
-  const { data, status, error, run, setData } = useAsync();
+  const { status, error, run } = useAsync();
 
-  useEffect(() => {
+  const onSubmit = (data) => {
     if (!data) {
       return;
-    } else
+    } else {
       run(
         authApi.login(data.email, data.password).then((formData) => formData)
       );
-  }, [data, run]);
-
-  const onSubmit = (data) => {
-    setData(data);
+    }
   };
 
   if (status === 'pending') {
