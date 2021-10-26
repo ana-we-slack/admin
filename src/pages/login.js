@@ -14,32 +14,47 @@ import Visibility from '@mui/icons-material/Visibility';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-
+import { useAsync } from '../utils/useAsync';
+import authApi from '../api/auth';
+import Spinner from '../components/spinner';
+import AdminList from './AdminList/AdminList';
 const schema = yup.object({
   email: yup.string().email().required(),
   password: yup.string().min(8).max(32).required(),
 });
 
 export default function Login() {
-  const {
-    handleSubmit,
-    register,
-    formState: { errors },
-    reset,
-  } = useForm({
-    resolver: yupResolver(schema),
-  });
-  const onSubmit = (data) => {
-    console.log(data);
-    reset();
-  };
-
   const [showPassword, setShowPassword] = useState(false);
-
   const onPasswordIconClick = () => {
     setShowPassword((showPassword) => !showPassword);
   };
 
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+  const { status, error, run } = useAsync();
+
+  const onSubmit = (data) => {
+    if (!data) {
+      return;
+    } else {
+      run(
+        authApi.login(data.email, data.password).then((formData) => formData)
+      );
+    }
+  };
+
+  if (status === 'pending') {
+    return <Spinner />;
+  } else if (status === 'rejected') {
+    throw error;
+  } else if (status === 'resolved') {
+    return <AdminList />;
+  }
   return (
     <Grid
       container
