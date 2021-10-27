@@ -24,10 +24,9 @@ const schema = yup.object({
 });
 
 export default function Login() {
+  const { status, error, run, data } = useAsync();
+
   const [showPassword, setShowPassword] = useState(false);
-  const onPasswordIconClick = () => {
-    setShowPassword((showPassword) => !showPassword);
-  };
 
   const {
     handleSubmit,
@@ -36,17 +35,15 @@ export default function Login() {
   } = useForm({
     resolver: yupResolver(schema),
   });
-  const { status, error, run } = useAsync();
 
-  const onSubmit = (data) => {
-    if (!data) {
+  const onSubmit = (formData) => {
+    if (!formData) {
       return;
     } else {
-      run(
-        authApi.login(data.email, data.password).then((formData) => formData)
-      );
+      run(authApi.login(formData.email, formData.password));
     }
   };
+  localStorage.setItem('TOKEN', data?.token);
 
   if (status === 'pending') {
     return <Spinner />;
@@ -55,6 +52,11 @@ export default function Login() {
   } else if (status === 'resolved') {
     return <AdminList />;
   }
+
+  const onPasswordIconClick = () => {
+    setShowPassword((showPassword) => !showPassword);
+  };
+
   return (
     <Grid
       container
