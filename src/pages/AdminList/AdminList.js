@@ -5,7 +5,8 @@ import { Grid, Typography } from '@mui/material';
 import { EnhancedTableToolbar } from './TableToolbar';
 import BreadCrumbs from '../../components/breadCrumbs';
 import { AdminTable } from './Table';
-export default function AdminList() {
+import { withRouter } from 'react-router-dom';
+function AdminList() {
   const [selected, setSelected] = useState([]);
 
   return (
@@ -30,3 +31,5 @@ export default function AdminList() {
     </Box>
   );
 }
+
+export default withRouter(AdminList);

@@ -17,13 +17,14 @@ import * as yup from 'yup';
 import { useAsync } from '../utils/useAsync';
 import authApi from '../api/auth';
 import Spinner from '../components/spinner';
+import { Route, withRouter } from 'react-router-dom';
 import AdminList from './AdminList/AdminList';
 const schema = yup.object({
   email: yup.string().email().required(),
   password: yup.string().min(8).max(32).required(),
 });
 
-export default function Login() {
+function Login() {
   const { status, error, run, data } = useAsync();
 
   const [showPassword, setShowPassword] = useState(false);
@@ -50,7 +51,11 @@ export default function Login() {
   } else if (status === 'rejected') {
     throw error;
   } else if (status === 'resolved') {
-    return <AdminList />;
+    return (
+      <Route>
+        <AdminList />
+      </Route>
+    );
   }
 
   const onPasswordIconClick = () => {
@@ -162,3 +167,5 @@ export default function Login() {
     </Grid>
   );
 }
+
+export default withRouter(Login);
