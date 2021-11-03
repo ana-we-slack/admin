@@ -1,21 +1,21 @@
 import { Redirect, Route } from 'react-router-dom';
+import { useAuth } from '../context/useAuth';
 
-export default function ProtectedRoute({
-  isAuth,
-  component: Component,
-  ...rest
-}) {
+export default function ProtectedRoute({ component: Component, ...rest }) {
+  let auth = useAuth();
   return (
     <Route
       {...rest}
       render={(props) => {
-        if (isAuth) {
+        if (auth.user) {
           return <Component />;
-        } else {
-          return (
-            <Redirect to={{ pathname: '/', state: { from: props.location } }} />
-          );
         }
+
+        return (
+          <Redirect
+            to={{ pathname: '/login', state: { from: props.location } }}
+          />
+        );
       }}
     ></Route>
   );

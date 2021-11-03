@@ -8,7 +8,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { IconButton, InputAdornment } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { VisibilityOff } from '@mui/icons-material';
 import Visibility from '@mui/icons-material/Visibility';
 import { useForm } from 'react-hook-form';
@@ -17,8 +17,8 @@ import * as yup from 'yup';
 import { useAsync } from '../utils/useAsync';
 import authApi from '../api/auth';
 import Spinner from '../components/spinner';
-import { Route, withRouter } from 'react-router-dom';
-import AdminList from './AdminList/AdminList';
+import { useAuth } from '../context/useAuth';
+import { Route, Redirect } from 'react-router-dom';
 const schema = yup.object({
   email: yup.string().email().required(),
   password: yup.string().min(8).max(32).required(),
@@ -26,9 +26,9 @@ const schema = yup.object({
 
 function Login() {
   const { status, error, run, data } = useAsync();
+  const auth = useAuth();
 
   const [showPassword, setShowPassword] = useState(false);
-
   const {
     handleSubmit,
     register,
@@ -44,7 +44,8 @@ function Login() {
       run(authApi.login(formData.email, formData.password));
     }
   };
-  localStorage.setItem('TOKEN', data?.token);
+
+  useEffect(() => localStorage.setItem('TOKEN', data?.token), [data?.token]);
 
   if (status === 'pending') {
     return <Spinner />;
@@ -52,9 +53,7 @@ function Login() {
     throw error;
   } else if (status === 'resolved') {
     return (
-      <Route>
-        <AdminList />
-      </Route>
+      <Route>{auth.user ? <Redirect to="/adminList" /> : <Login />}</Route>
     );
   }
 
@@ -168,4 +167,4 @@ function Login() {
   );
 }
 
-export default withRouter(Login);
+export default Login;

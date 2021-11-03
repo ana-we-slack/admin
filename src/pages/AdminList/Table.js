@@ -5,30 +5,16 @@ import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
 import { EnhancedTableHead } from './TableHead';
 import ThreeDotsMenu from '../../components/menu';
-import { Avatar, CardHeader, Checkbox, TablePagination } from '@mui/material';
+import { Avatar, CardHeader, Checkbox } from '@mui/material';
 import { useAsync } from '../../utils/useAsync';
 import { useEffect, useState } from 'react';
 import adminApi from '../../api/admin';
 import Spinner from '../../components/spinner';
+import { CustomPagination } from './TablePagination';
 
 export const AdminTable = ({ selected, setSelected }) => {
   const { status, error, run, data } = useAsync();
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const handleChangePage = (event, pageNumber) => {
-    run(
-      adminApi.getAdmins({
-        page_number: +pageNumber + 1,
-        page_size: rowsPerPage,
-      })
-    );
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    const newValue = parseInt(event.target.value, 10);
-
-    run(adminApi.getAdmins({ page_number: 1, page_size: newValue }));
-    setRowsPerPage(newValue);
-  };
 
   useEffect(() => {
     run(adminApi.getAdmins({ page_size: rowsPerPage }));
@@ -136,14 +122,11 @@ export const AdminTable = ({ selected, setSelected }) => {
           </TableBody>
         </Table>
       </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
-        component="div"
-        count={data?.pagination.count}
-        rowsPerPage={data?.pagination.page_size}
-        page={+data?.pagination.page_number - 1}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
+      <CustomPagination
+        setRowsPerPage={setRowsPerPage}
+        run={run}
+        rowsPerPage={rowsPerPage}
+        data={data}
       />
     </>
   );
