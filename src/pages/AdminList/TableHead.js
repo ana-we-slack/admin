@@ -1,24 +1,11 @@
 import TableHead from '@mui/material/TableHead';
-import { visuallyHidden } from '@mui/utils';
-import TableSortLabel from '@mui/material/TableSortLabel';
 import { TableCell, TableRow } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
-import { Box } from '@mui/system';
-import { headCells } from '../../fakeData';
 
 export function EnhancedTableHead(props) {
-  const {
-    onSelectAllClick,
-    order,
-    orderBy,
-    numSelected,
-    rowCount,
-    onRequestSort,
-  } = props;
-  const createSortHandler = (property) => (event) => {
-    onRequestSort(event, property);
-  };
+  const { onSelectAllClick, numSelected, rowCount } = props;
 
+  const HeadCells = ['FirstName', 'LastName', 'CreatetAt', 'UpdatedAt'];
   return (
     <TableHead>
       <TableRow>
@@ -29,29 +16,19 @@ export function EnhancedTableHead(props) {
             checked={rowCount > 0 && numSelected === rowCount}
             onChange={onSelectAllClick}
             inputProps={{
-              'aria-label': 'select all desserts',
+              'aria-label': 'select all admins',
             }}
           />
         </TableCell>
-        {headCells.map((headCell) => (
+        <TableCell>Email</TableCell>
+        {HeadCells.map((headCell) => (
           <TableCell
-            key={headCell.id}
-            align={headCell.numeric ? 'right' : 'left'}
-            padding={headCell.disablePadding ? 'none' : 'normal'}
-            sortDirection={orderBy === headCell.id ? order : false}
+            key={headCell}
+            align="right"
+            padding="none"
+            style={{ minWidth: 170 }}
           >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
-            >
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <Box component="span" sx={visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </Box>
-              ) : null}
-            </TableSortLabel>
+            {headCell}
           </TableCell>
         ))}
       </TableRow>

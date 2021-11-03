@@ -7,8 +7,8 @@ const createAdmin = (body) => {
 const searchAdmin = (searchTerm, options) => {
   return axios.get(`/admin`, { params: { searchTerm, options } });
 };
-const getAdmins = () => {
-  return axios.get(`/admin`);
+const getAdmins = (params) => {
+  return axios.get(`/admin`, { params });
 };
 const getAdminById = (id) => {
   return axios.get(`/admin/${id}`);
