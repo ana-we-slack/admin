@@ -21,6 +21,9 @@ export function useProvideAuth() {
     run(profileApi.myProfile());
   }, [run]);
 
+  useEffect(() => localStorage.setItem('USER', JSON.stringify(data)), [data]);
+
+  const User = localStorage.getItem('USER');
   if (status === 'pending') {
     return <Spinner />;
   } else if (status === 'error') {
@@ -28,6 +31,6 @@ export function useProvideAuth() {
   }
 
   return {
-    user: data,
+    user: User,
   };
 }
