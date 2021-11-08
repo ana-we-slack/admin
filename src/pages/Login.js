@@ -18,7 +18,8 @@ import { useAsync } from '../utils/useAsync';
 import authApi from '../api/auth';
 import Spinner from '../components/spinner';
 import { useAuth } from '../context/useAuth';
-import { Route, Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
+import profileApi from '../api/profile';
 const schema = yup.object({
   email: yup.string().email().required(),
   password: yup.string().min(8).max(32).required(),
@@ -26,9 +27,12 @@ const schema = yup.object({
 
 function Login() {
   const { status, error, run, data } = useAsync();
-  const auth = useAuth();
-
+  const { run: profileRun, data: profileData } = useAsync();
+  const { setAuthState, authState } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
+  const onPasswordIconClick = () => {
+    setShowPassword((showPassword) => !showPassword);
+  };
   const {
     handleSubmit,
     register,
@@ -44,126 +48,132 @@ function Login() {
       run(authApi.login(formData.email, formData.password));
     }
   };
-
-  useEffect(() => localStorage.setItem('TOKEN', data?.token), [data?.token]);
+  useEffect(() => {
+    if (data?.token) {
+      profileRun(profileApi.myProfile());
+    }
+  }, [data, profileData, profileRun, setAuthState]);
 
   if (status === 'pending') {
     return <Spinner />;
   } else if (status === 'rejected') {
     throw error;
-  } else if (status === 'resolved') {
-    return (
-      <Route>{auth.user ? <Redirect to="/adminList" /> : <Login />}</Route>
-    );
   }
 
-  const onPasswordIconClick = () => {
-    setShowPassword((showPassword) => !showPassword);
-  };
+  if (data) {
+    setAuthState({ token: data?.token });
+  }
+
+  if (profileData) {
+    setAuthState({ user: profileData });
+  }
 
   return (
-    <Grid
-      container
-      spacing={0}
-      direction="column"
-      alignItems="center"
-      justifyContent="center"
-      style={{ minHeight: '100vh' }}
-    >
-      <Container component="main" maxWidth="xs">
-        <Box>
-          <Typography component="div" variant="h5" align="left" color="black">
-            Sign in
-          </Typography>
-          <Typography
-            mt={1}
-            component="p"
-            variant="subtitle2"
-            align="left"
-            color="GrayText"
-          >
-            Enter your details below
-          </Typography>
-          <Box
-            component="form"
-            noValidate
-            sx={{ mt: 3 }}
-            onSubmit={handleSubmit(onSubmit)}
-          >
-            <TextField
-              error={!!errors.email}
-              helperText={errors.email?.message}
-              defaultValue=""
-              type="email"
-              {...register('email')}
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              autoComplete="email"
-              autoFocus
-              color="success"
-            />
-            <TextField
-              error={!!errors.password}
-              helperText={errors.password?.message}
-              defaultValue=""
-              {...register('password')}
-              type={showPassword ? 'text' : 'password'}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={() => onPasswordIconClick()}>
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-              margin="normal"
-              required
-              fullWidth
-              label="Password"
-              id="password"
-              autoComplete="current-password"
-              color="success"
-            />
-            <Grid container>
-              <Grid item xs>
-                <FormControlLabel
-                  control={
-                    <Checkbox {...register('remember')} color="success" />
-                  }
-                  label="Remember me"
-                />
-              </Grid>
-              <Grid item alignItems="self-end" mt={1}>
-                <Link
-                  href="#"
-                  variant="body2"
-                  underline="none"
-                  borderColor="green"
-                  color="green"
-                >
-                  Forgot password?
-                </Link>
-              </Grid>
-            </Grid>
-
-            <Button
-              id="submit"
-              color="success"
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+    <>
+      {authState.user && <Redirect to="/adminList" />}
+      <Grid
+        container
+        spacing={0}
+        direction="column"
+        alignItems="center"
+        justifyContent="center"
+        style={{ minHeight: '100vh' }}
+      >
+        <Container component="main" maxWidth="xs">
+          <Box>
+            <Typography component="div" variant="h5" align="left" color="black">
+              Sign in
+            </Typography>
+            <Typography
+              mt={1}
+              component="p"
+              variant="subtitle2"
+              align="left"
+              color="GrayText"
             >
-              Sign In
-            </Button>
+              Enter your details below
+            </Typography>
+            <Box
+              component="form"
+              noValidate
+              sx={{ mt: 3 }}
+              onSubmit={handleSubmit(onSubmit)}
+            >
+              <TextField
+                error={!!errors.email}
+                helperText={errors.email?.message}
+                defaultValue=""
+                type="email"
+                {...register('email')}
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                autoComplete="email"
+                autoFocus
+                color="success"
+              />
+              <TextField
+                error={!!errors.password}
+                helperText={errors.password?.message}
+                defaultValue=""
+                {...register('password')}
+                type={showPassword ? 'text' : 'password'}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={() => onPasswordIconClick()}>
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                margin="normal"
+                required
+                fullWidth
+                label="Password"
+                id="password"
+                autoComplete="current-password"
+                color="success"
+              />
+              <Grid container>
+                <Grid item xs>
+                  <FormControlLabel
+                    control={
+                      <Checkbox {...register('remember')} color="success" />
+                    }
+                    label="Remember me"
+                  />
+                </Grid>
+                <Grid item alignItems="self-end" mt={1}>
+                  <Link
+                    href="#"
+                    variant="body2"
+                    underline="none"
+                    borderColor="green"
+                    color="green"
+                  >
+                    Forgot password?
+                  </Link>
+                </Grid>
+              </Grid>
+
+              <Button
+                id="submit"
+                color="success"
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Sign In
+              </Button>
+            </Box>
           </Box>
-        </Box>
-      </Container>
-    </Grid>
+        </Container>
+      </Grid>
+    </>
   );
 }
 

@@ -1,32 +1,34 @@
-import axios from '../axios';
+import { useAxios } from '../context/useAxios';
+
+const { authAxios } = useAxios();
 
 const createAdmin = (body) => {
-  return axios.post(`/admin`, body);
+  return useAxios.post(`/admin`, body);
 };
 
 const searchAdmin = (searchTerm, options) => {
-  return axios.get(`/admin`, { params: { searchTerm, options } });
+  return useAxios.get(`/admin`, { params: { searchTerm, options } });
 };
 const getAdmins = (params) => {
-  return axios.get(`/admin`, { params });
+  return useAxios.get(`/admin`, { params });
 };
 const getAdminById = (id) => {
-  return axios.get(`/admin/${id}`);
+  return useAxios.get(`/admin/${id}`);
 };
 
 const updateAdmin = (id, body) => {
-  return axios.patch(`/admin/${id}`, body);
+  return useAxios.patch(`/admin/${id}`, body);
 };
 
 const resetAdminPassword = (password, resetPasswordToken) => {
-  return axios.patch(`/admin/password`, {
+  return useAxios.patch(`/admin/password`, {
     reset_password_token: resetPasswordToken,
     password,
   });
 };
 
 const deleteAdmin = (id) => {
-  return axios.delete(`/admin/${id}`);
+  return useAxios.delete(`/admin/${id}`);
 };
 
 const adminApi = {

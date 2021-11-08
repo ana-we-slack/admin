@@ -1,7 +1,4 @@
-import { useContext, createContext, useEffect } from 'react';
-import profileApi from '../api/profile';
-import { useAsync } from '../utils/useAsync';
-import Spinner from '../components/spinner';
+import { useContext, createContext, useState } from 'react';
 
 const authContext = createContext();
 
@@ -15,22 +12,25 @@ export const useAuth = () => {
 };
 
 export function useProvideAuth() {
-  const { data, error, status, run } = useAsync();
+  const token = localStorage.getItem('Token');
+  const user = localStorage.getItem('User');
 
-  useEffect(() => {
-    run(profileApi.myProfile());
-  }, [run]);
+  const [authState, setAuthState] = useState({
+    token,
+    user: user ? JSON.parse(user) : {},
+  });
 
-  useEffect(() => localStorage.setItem('USER', JSON.stringify(data)), [data]);
-
-  const User = localStorage.getItem('USER');
-  if (status === 'pending') {
-    return <Spinner />;
-  } else if (status === 'error') {
-    throw error;
-  }
+  const setAuthInfo = ({ token, user }) => {
+    localStorage.setItem('Token', token);
+    localStorage.setItem('User', JSON.stringify(user));
+    setAuthState({
+      token,
+      user,
+    });
+  };
 
   return {
-    user: User,
+    authState,
+    setAuthState: (authInfo) => setAuthInfo(authInfo),
   };
 }

@@ -1,13 +1,18 @@
 import { CssBaseline } from '@mui/material';
 import { Router } from './components/router';
 import { ProvideAuth } from './context/useAuth';
+import { ProvideAxios } from './context/useAxios';
 
 function App() {
   return (
-    <ProvideAuth>
+    <>
       <CssBaseline />
-      <Router />
-    </ProvideAuth>
+      <ProvideAuth>
+        <ProvideAxios>
+          <Router />
+        </ProvideAxios>
+      </ProvideAuth>
+    </>
   );
 }
 

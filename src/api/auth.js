@@ -1,14 +1,14 @@
-import axios from '../axios';
+import { useAxios } from '../context/useAxios';
 
 const login = (email, password) => {
-  return axios.post(`/auth/login`, {
+  return useAxios.post(`/auth/login`, {
     email,
     password,
   });
 };
 
 const forgetPassword = (email) => {
-  return axios.post(`/auth/forget-password`, { email });
+  return useAxios.post(`/auth/forget-password`, { email });
 };
 
 const authApi = {
