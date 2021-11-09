@@ -42,9 +42,7 @@ function Login() {
   });
 
   const onSubmit = (formData) => {
-    if (!formData) {
-      return;
-    } else {
+    if (formData) {
       run(authApi.login(formData.email, formData.password));
     }
   };
@@ -52,25 +50,22 @@ function Login() {
     if (data?.token) {
       profileRun(profileApi.myProfile());
     }
-  }, [data, profileData, profileRun, setAuthState]);
+  }, [data?.token, profileRun]);
+
+  useEffect(() => {
+    if (data?.token || profileData) {
+      setAuthState({ token: data?.token, user: profileData });
+    }
+  }, [data?.token, profileData, setAuthState]);
 
   if (status === 'pending') {
     return <Spinner />;
   } else if (status === 'rejected') {
     throw error;
   }
-
-  if (data) {
-    setAuthState({ token: data?.token });
-  }
-
-  if (profileData) {
-    setAuthState({ user: profileData });
-  }
-
   return (
     <>
-      {authState.user && <Redirect to="/adminList" />}
+      {!!authState.user && <Redirect to="/adminList" />}
       <Grid
         container
         spacing={0}

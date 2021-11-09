@@ -1,22 +1,22 @@
-import { useAxios } from '../context/useAxios';
+import axios from './axios';
 
 const myProfile = () => {
-  return useAxios.get(`/profile`);
+  return axios.get(`/profile`);
 };
 
 const updateProfile = (body) => {
-  return useAxios.patch(`/profile`, body);
+  return axios.patch(`/profile`, body);
 };
 
 const updateProfilePassword = (password, oldPassword) => {
-  return useAxios.patch(`/profile/password`, {
+  return axios.patch(`/profile/password`, {
     password,
     old_password: oldPassword,
   });
 };
 
 const uploadProfileAvatar = (avatar) => {
-  return useAxios.patch(`/profile/avatar`, avatar);
+  return axios.patch(`/profile/avatar`, avatar);
 };
 
 const profileApi = {

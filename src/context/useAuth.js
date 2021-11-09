@@ -1,4 +1,4 @@
-import { useContext, createContext, useState } from 'react';
+import { useContext, createContext, useState, useMemo } from 'react';
 
 const authContext = createContext();
 
@@ -17,17 +17,21 @@ export function useProvideAuth() {
 
   const [authState, setAuthState] = useState({
     token,
-    user: user ? JSON.parse(user) : {},
+    user,
   });
 
-  const setAuthInfo = ({ token, user }) => {
-    localStorage.setItem('Token', token);
-    localStorage.setItem('User', JSON.stringify(user));
-    setAuthState({
-      token,
-      user,
-    });
-  };
+  const setAuthInfo = useMemo(
+    () =>
+      ({ token, user }) => {
+        localStorage.setItem('Token', token);
+        localStorage.setItem('User', JSON.stringify(user));
+        setAuthState({
+          token,
+          user,
+        });
+      },
+    []
+  );
 
   return {
     authState,
