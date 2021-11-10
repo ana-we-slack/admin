@@ -26,8 +26,13 @@ const schema = yup.object({
 });
 
 function Login() {
-  const { status, error, run, data } = useAsync();
-  const { run: profileRun, data: profileData } = useAsync();
+  const { status, run, data, error } = useAsync();
+  const {
+    run: profileRun,
+    data: profileData,
+    status: profileStatus,
+    error: profileError,
+  } = useAsync();
   const { setAuthState, authState } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const onPasswordIconClick = () => {
@@ -58,10 +63,10 @@ function Login() {
     }
   }, [data?.token, profileData, setAuthState]);
 
-  if (status === 'pending') {
+  if ([status, profileStatus].includes('pending')) {
     return <Spinner />;
-  } else if (status === 'rejected') {
-    throw error;
+  } else if ([status, profileStatus].includes('rejected')) {
+    throw error || profileError;
   }
   return (
     <>

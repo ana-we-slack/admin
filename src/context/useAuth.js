@@ -1,4 +1,4 @@
-import { useContext, createContext, useState, useMemo } from 'react';
+import { useContext, createContext, useState, useCallback } from 'react';
 
 const authContext = createContext();
 
@@ -20,21 +20,17 @@ export function useProvideAuth() {
     user,
   });
 
-  const setAuthInfo = useMemo(
-    () =>
-      ({ token, user }) => {
-        localStorage.setItem('Token', token);
-        localStorage.setItem('User', JSON.stringify(user));
-        setAuthState({
-          token,
-          user,
-        });
-      },
-    []
-  );
+  const setAuthInfo = useCallback(({ token, user }) => {
+    localStorage.setItem('Token', token);
+    localStorage.setItem('User', JSON.stringify(user));
+    setAuthState({
+      token,
+      user,
+    });
+  }, []);
 
   return {
     authState,
-    setAuthState: (authInfo) => setAuthInfo(authInfo),
+    setAuthState: setAuthInfo,
   };
 }
