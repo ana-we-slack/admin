@@ -1,4 +1,4 @@
-import axios from '../axios';
+import axios from './axios';
 
 const createAdmin = (body) => {
   return axios.post(`/admin`, body);

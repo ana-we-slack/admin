@@ -1,24 +1,34 @@
 import Table from '@mui/material/Table';
 import TableContainer from '@mui/material/TableContainer';
 import { EnhancedTableHead } from './TableHead';
-import { useAsync } from '../../utils/useAsync';
-import { useEffect } from 'react';
-import adminApi from '../../api/admin';
-import Spinner from '../../components/spinner';
 import { TableRows } from '../../pages/AdminList/TableRows';
 import { CustomTablePagination } from './TablePagination';
+import Spinner from '../../components/spinner';
+import { useEffect } from 'react';
+import adminApi from '../../api/admin';
+import { useAsync } from '../../utils/useAsync';
+
 export const AdminTable = ({
   selected,
   setSelected,
   rowsPerPage,
   setRowsPerPage,
-  searchData,
+  data,
+  status,
+  error,
+  run,
+  query,
 }) => {
-  const { status, error, run, data } = useAsync();
+  const {
+    data: defaultData,
+    run: defaultRun,
+    status: defaultStatus,
+    error: defaultError,
+  } = useAsync();
 
   useEffect(() => {
-    run(adminApi.getAdmins({ page_size: rowsPerPage }));
-  }, [rowsPerPage, run]);
+    defaultRun(adminApi.getAdmins({ page_size: rowsPerPage }));
+  }, []);
 
   if (status === 'pending') {
     return <Spinner />;
@@ -67,20 +77,23 @@ export const AdminTable = ({
             rowCount={data?.results.length}
           />
           <TableRows
+            rowsPerPage={rowsPerPage}
             data={data}
-            searchData={searchData}
             handleClick={handleClick}
             isSelected={isSelected}
+            defaultData={defaultData}
+            defaultStatus={defaultStatus}
+            defaultError={defaultError}
           />
         </Table>
       </TableContainer>
       <CustomTablePagination
-        run={run}
-        adminApi={adminApi}
         rowsPerPage={rowsPerPage}
         setRowsPerPage={setRowsPerPage}
         data={data}
-        searchData={searchData}
+        run={run}
+        defaultData={defaultData}
+        query={query}
       />
     </>
   );

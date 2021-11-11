@@ -1,8 +1,6 @@
 import axios from 'axios';
-
 const instance = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
-  headers: { Authorization: `Bearer ${localStorage.getItem('TOKEN')}` },
 });
 
 instance.interceptors.response.use(
@@ -10,7 +8,15 @@ instance.interceptors.response.use(
     return res.data;
   },
   (error) => {
-    console.log(error.toJSON());
+    throw error;
   }
 );
+
+instance.interceptors.request.use(function (config) {
+  const token = localStorage.getItem('Token');
+  config.headers.Authorization = `Bearer ${token}`;
+
+  return config;
+});
+
 export default instance;
