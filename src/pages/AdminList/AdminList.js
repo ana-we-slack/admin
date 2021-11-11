@@ -8,16 +8,19 @@ import { AdminTable } from './Table';
 import adminApi from '../../api/admin';
 import { useAsync } from '../../utils/useAsync';
 import debounce from 'lodash.debounce';
-
 function AdminList() {
   const [selected, setSelected] = useState([]);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
-  const { data, run } = useAsync();
+  const { data, run, status, error } = useAsync();
+  const [query, setQuery] = useState('');
 
   const onSearch = useCallback(
-    (query) => {
-      run(adminApi.getAdmins({ search: query, page_size: rowsPerPage }));
+    (value) => {
+      if (value) {
+        run(adminApi.getAdmins({ search: value, page_size: rowsPerPage }));
+      } else {
+        run(adminApi.getAdmins({ page_size: rowsPerPage }));
+      }
     },
     [rowsPerPage, run]
   );
@@ -25,7 +28,9 @@ function AdminList() {
   const debouncedSearch = useMemo(() => debounce(onSearch, 300), [onSearch]);
 
   const onChange = (event) => {
-    onSearch(event.target.value);
+    const { value } = event.target;
+    onSearch(value);
+    setQuery(value);
   };
 
   useEffect(() => {
@@ -52,14 +57,17 @@ function AdminList() {
           <CustomTableToolbar
             numSelected={selected.length}
             onChange={onChange}
-            debounce={debounce}
           />
           <AdminTable
+            status={status}
+            error={error}
             selected={selected}
             setSelected={setSelected}
             rowsPerPage={rowsPerPage}
             setRowsPerPage={setRowsPerPage}
-            searchData={data}
+            data={data}
+            run={run}
+            query={query}
           />
         </Paper>
       </Grid>

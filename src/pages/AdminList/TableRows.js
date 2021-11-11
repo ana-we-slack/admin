@@ -3,12 +3,28 @@ import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import { Avatar, CardHeader, Checkbox } from '@mui/material';
 import ThreeDotsMenu from '../../components/menu';
+import Spinner from '../../components/spinner';
 
-export const TableRows = ({ handleClick, isSelected, data, searchData }) => {
+export const TableRows = ({
+  handleClick,
+  isSelected,
+  data,
+  rowsPerPage,
+  defaultData,
+  defaultStatus,
+  defaultError,
+}) => {
+  if (defaultStatus === 'pending') {
+    return <Spinner />;
+  } else if (defaultStatus === 'rejected') {
+    throw defaultError;
+  } else if (!data && !defaultData) {
+    return <h1>Data no Avaliabe</h1>;
+  }
   return (
     <TableBody>
-      {searchData?.results.length > 0
-        ? searchData?.results.map((row, index) => {
+      {data?.results.length > 0
+        ? data?.results.map((row, index) => {
             const isItemSelected = isSelected(row._id);
             const labelId = `enhanced-table-checkbox-${index}`;
             return (
@@ -60,7 +76,7 @@ export const TableRows = ({ handleClick, isSelected, data, searchData }) => {
               </TableRow>
             );
           })
-        : data?.results.map((row, index) => {
+        : defaultData?.results.map((row, index) => {
             const isItemSelected = isSelected(row._id);
             const labelId = `enhanced-table-checkbox-${index}`;
             return (

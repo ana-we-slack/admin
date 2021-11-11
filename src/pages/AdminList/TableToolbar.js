@@ -10,13 +10,18 @@ import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Button from '../../components/Button';
 import FilterListIcon from '@mui/icons-material/FilterList';
+import { useEffect, useMemo } from 'react';
+import debounce from 'lodash.debounce';
 
-export const CustomTableToolbar = ({
-  numSelected,
-  onChange,
-  debounce,
-  query,
-}) => {
+export const CustomTableToolbar = ({ numSelected, onChange }) => {
+  const debouncedOnChange = useMemo(() => debounce(onChange, 300), [onChange]);
+
+  useEffect(() => {
+    return () => {
+      debouncedOnChange.cancel();
+    };
+  }, [debouncedOnChange]);
+
   return (
     <Toolbar
       sx={{
@@ -51,7 +56,7 @@ export const CustomTableToolbar = ({
       ) : (
         <>
           <InputBase
-            onChange={debounce(onChange, 300)}
+            onChange={debouncedOnChange}
             type="text"
             sx={{ flex: '1 1 33%' }}
             startAdornment={
