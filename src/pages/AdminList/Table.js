@@ -75,12 +75,11 @@ export const AdminTable = ({
         </Table>
       </TableContainer>
       <CustomTablePagination
-        run={run}
-        adminApi={adminApi}
-        rowsPerPage={rowsPerPage}
         setRowsPerPage={setRowsPerPage}
+        run={run}
+        rowsPerPage={rowsPerPage}
         data={data}
-        searchData={searchData}
+        adminApi={adminApi}
       />
     </>
   );
