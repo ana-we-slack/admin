@@ -50,7 +50,6 @@ function CreateAdmin() {
   } else if (status === 'rejected') {
     throw error;
   }
-  console.log(data);
 
   return (
     <>

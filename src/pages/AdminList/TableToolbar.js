@@ -14,7 +14,7 @@ import debounce from 'lodash.debounce';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import AddIcon from '@mui/icons-material/Add';
-
+import { Link } from 'react-router-dom';
 export const CustomTableToolbar = ({ numSelected, onChange }) => {
   const debouncedOnChange = useMemo(() => debounce(onChange, 300), [onChange]);
 
@@ -76,13 +76,14 @@ export const CustomTableToolbar = ({ numSelected, onChange }) => {
           </Tooltip>
           <Stack direction="row" spacing={2}>
             <Button
-              href="/createAdmin"
+              to="/createAdmin"
+              component={Link}
               color="success"
               back
               variant="contained"
               startIcon={<AddIcon />}
             >
-              New User
+              New Admin
             </Button>
           </Stack>
         </>
