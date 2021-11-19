@@ -77,7 +77,6 @@ export const AdminTable = ({
             rowCount={data?.results.length}
           />
           <TableRows
-            rowsPerPage={rowsPerPage}
             data={data}
             handleClick={handleClick}
             isSelected={isSelected}

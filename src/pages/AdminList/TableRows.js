@@ -9,7 +9,6 @@ export const TableRows = ({
   handleClick,
   isSelected,
   data,
-  rowsPerPage,
   defaultData,
   defaultStatus,
   defaultError,
@@ -71,7 +70,7 @@ export const TableRows = ({
                   align="center"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <ThreeDotsMenu />{' '}
+                  <ThreeDotsMenu id={row._id} />{' '}
                 </TableCell>
               </TableRow>
             );
@@ -123,7 +122,7 @@ export const TableRows = ({
                   align="center"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <ThreeDotsMenu />{' '}
+                  <ThreeDotsMenu id={row._id} />{' '}
                 </TableCell>
               </TableRow>
             );
