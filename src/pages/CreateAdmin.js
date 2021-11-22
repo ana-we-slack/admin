@@ -14,7 +14,7 @@ import * as yup from 'yup';
 import { useAsync } from '../utils/useAsync';
 import adminApi from '../api/admin';
 import Spinner from '../components/spinner';
-import { Redirect } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
 
 const schema = yup.object({
   first_name: yup.string().min(3).max(15).required(),
@@ -26,7 +26,7 @@ const schema = yup.object({
 
 function CreateAdmin() {
   const { status, run, data, error } = useAsync();
-
+  const history = useHistory();
   const [showPassword, setShowPassword] = useState(false);
   const onPasswordIconClick = () => {
     setShowPassword((showPassword) => !showPassword);
@@ -38,6 +38,10 @@ function CreateAdmin() {
   } = useForm({
     resolver: yupResolver(schema),
   });
+
+  const onCancel = () => {
+    history.push('/adminList');
+  };
 
   const onSubmit = (formData) => {
     if (formData) {
@@ -166,17 +170,31 @@ function CreateAdmin() {
                   color="success"
                 />
               </Grid>
+              <Grid item xs={12} sm={6}>
+                <Button
+                  fullWidth
+                  color="success"
+                  id="submit"
+                  type="submit"
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                >
+                  Add Admin
+                </Button>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Button
+                  onClick={onCancel}
+                  fullWidth
+                  color="error"
+                  type="cancel"
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                >
+                  Cancel
+                </Button>
+              </Grid>
             </Grid>
-            <Button
-              color="success"
-              id="submit"
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Add Admin
-            </Button>
           </Box>
         </Box>
       </Container>

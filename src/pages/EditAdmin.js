@@ -11,6 +11,7 @@ import { useLocation, Redirect } from 'react-router-dom';
 import { useAsync } from '../utils/useAsync';
 import adminApi from '../api/admin';
 import Spinner from '../components/spinner';
+import { useHistory } from 'react-router-dom';
 const schema = yup.object({
   first_name: yup.string().min(3).max(15).required(),
   last_name: yup.string().min(3).max(15).required(),
@@ -22,6 +23,7 @@ function EditAdmin() {
   const { data: editData, error, status, run } = useAsync();
   const location = useLocation();
   const { data } = location.state;
+  const history = useHistory();
 
   const {
     handleSubmit,
@@ -37,6 +39,10 @@ function EditAdmin() {
       email: data.email,
     },
   });
+
+  const onCancel = () => {
+    history.push('/adminList');
+  };
 
   const onSubmit = (formData) => {
     if (formData) {
@@ -136,17 +142,31 @@ function EditAdmin() {
                   color="success"
                 />
               </Grid>
+              <Grid item xs={12} sm={6}>
+                <Button
+                  fullWidth
+                  color="success"
+                  id="submit"
+                  type="submit"
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                >
+                  Add Admin
+                </Button>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Button
+                  onClick={onCancel}
+                  fullWidth
+                  color="error"
+                  type="cancel"
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                >
+                  Cancel
+                </Button>
+              </Grid>
             </Grid>
-            <Button
-              color="success"
-              id="submit"
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Edit Admin
-            </Button>
           </Box>
         </Box>
       </Container>
