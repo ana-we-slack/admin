@@ -14,7 +14,7 @@ export function Router() {
         <Route path="/login" exact component={Login} />
         <ProtectedRoute path="/adminList" component={AdminList} />
         <ProtectedRoute path="/createAdmin" component={CreateAdmin} />
-        <ProtectedRoute path="/editAdmin" component={EditAdmin} />
+        <ProtectedRoute path="/editAdmin/:id" component={EditAdmin} />
         <Route component={NotFound} />
       </Switch>
     </BrowserRouter>

@@ -9,13 +9,17 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import EditIcon from '@mui/icons-material/Edit';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import adminApi from '../api/admin';
+
 import { useAsync } from '../utils/useAsync';
-import { Redirect } from 'react-router-dom';
+
 export default function ThreeDotsMenu({ id }) {
   const { data, run } = useAsync();
+
   const [anchorEl, setAnchorEl] = useState(null);
+  let history = useHistory();
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -24,20 +28,19 @@ export default function ThreeDotsMenu({ id }) {
     setAnchorEl(null);
   };
 
-  const Edit = useCallback(() => {
+  useEffect(() => {
     run(adminApi.getAdminById(id));
   }, [id, run]);
 
+  const Edit = useCallback(() => {
+    history.push({
+      pathname: `/editAdmin/${id}`,
+      state: { data: data },
+    });
+  }, [data, history, id]);
+
   return (
     <>
-      {!!data && (
-        <Redirect
-          to={{
-            pathname: '/editAdmin',
-            state: { data },
-          }}
-        />
-      )}
       <div>
         <IconButton
           aria-label="more"
