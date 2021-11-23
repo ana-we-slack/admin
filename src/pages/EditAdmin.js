@@ -1,4 +1,5 @@
 import Button from '@mui/material/Button';
+
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -24,11 +25,9 @@ function EditAdmin() {
   const location = useLocation();
   const { data } = location.state;
   const history = useHistory();
-
   const {
     handleSubmit,
     register,
-
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
@@ -38,6 +37,7 @@ function EditAdmin() {
       username: data.username,
       email: data.email,
     },
+    mode: 'onBlur',
   });
 
   const onCancel = () => {
@@ -55,7 +55,6 @@ function EditAdmin() {
   } else if (status === 'rejected') {
     throw error;
   }
-
   return (
     <>
       {!!editData && <Redirect to="/adminList" />}
@@ -90,7 +89,6 @@ function EditAdmin() {
                   id="first_name"
                   label="First Name"
                   autoComplete="first_name"
-                  autoFocus
                   color="success"
                 />
               </Grid>
@@ -106,7 +104,6 @@ function EditAdmin() {
                   id="last_name"
                   label="Last Name"
                   autoComplete="last name"
-                  autoFocus
                   color="success"
                 />
               </Grid>
@@ -122,7 +119,6 @@ function EditAdmin() {
                   id="username"
                   label="User Name"
                   autoComplete="user name"
-                  autoFocus
                   color="success"
                 />
               </Grid>
@@ -138,7 +134,6 @@ function EditAdmin() {
                   id="email"
                   label="Email Address"
                   autoComplete="email"
-                  autoFocus
                   color="success"
                 />
               </Grid>

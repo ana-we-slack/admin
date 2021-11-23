@@ -37,6 +37,7 @@ function CreateAdmin() {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
+    mode: 'onBlur',
   });
 
   const onCancel = () => {
@@ -90,7 +91,6 @@ function CreateAdmin() {
                   id="first_name"
                   label="First Name"
                   autoComplete="first_name"
-                  autoFocus
                   color="success"
                 />
               </Grid>
@@ -107,7 +107,6 @@ function CreateAdmin() {
                   id="last_name"
                   label="Last Name"
                   autoComplete="last name"
-                  autoFocus
                   color="success"
                 />
               </Grid>
@@ -124,7 +123,6 @@ function CreateAdmin() {
                   id="username"
                   label="User Name"
                   autoComplete="user name"
-                  autoFocus
                   color="success"
                 />
               </Grid>
@@ -141,7 +139,6 @@ function CreateAdmin() {
                   id="email"
                   label="Email Address"
                   autoComplete="email"
-                  autoFocus
                   color="success"
                 />
               </Grid>

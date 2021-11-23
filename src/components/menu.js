@@ -33,7 +33,7 @@ export default function ThreeDotsMenu({ id }) {
       {!!data && (
         <Redirect
           to={{
-            pathname: '/EditAdmin',
+            pathname: '/editAdmin',
             state: { data },
           }}
         />
