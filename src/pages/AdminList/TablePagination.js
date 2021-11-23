@@ -1,18 +1,20 @@
 import { TablePagination } from '@mui/material';
+import adminApi from '../../api/admin';
 
 export const CustomTablePagination = ({
-  searchData,
   data,
-  run,
-  adminApi,
   rowsPerPage,
   setRowsPerPage,
+  run,
+  defaultData,
+  query,
 }) => {
   const handleChangePage = (event, pageNumber) => {
     run(
       adminApi.getAdmins({
         page_number: +pageNumber + 1,
         page_size: rowsPerPage,
+        search: query,
       })
     );
   };
@@ -20,22 +22,15 @@ export const CustomTablePagination = ({
   const handleChangeRowsPerPage = (event) => {
     const newValue = parseInt(event.target.value, 10);
 
-    run(adminApi.getAdmins({ page_number: 1, page_size: newValue }));
+    run(
+      adminApi.getAdmins({ page_number: 1, page_size: newValue, search: query })
+    );
     setRowsPerPage(newValue);
   };
-  return (
-    <>
-      {searchData?.results > 0 ? (
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={searchData?.pagination.count}
-          rowsPerPage={searchData?.pagination.page_size}
-          page={+searchData?.pagination.page_number - 1}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      ) : (
+
+  const getPagination = () => {
+    if (data?.results.length > 0) {
+      return (
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
@@ -45,7 +40,20 @@ export const CustomTablePagination = ({
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-      )}
-    </>
-  );
+      );
+    } else if (defaultData?.results.length > 0) {
+      return (
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={defaultData?.pagination.count}
+          rowsPerPage={defaultData?.pagination.page_size}
+          page={+defaultData?.pagination.page_number - 1}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      );
+    }
+  };
+  return <>{getPagination()}</>;
 };

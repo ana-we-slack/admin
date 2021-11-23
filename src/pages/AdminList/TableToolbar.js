@@ -8,15 +8,22 @@ import {
 import { alpha } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete';
-import Button from '../../components/Button';
 import FilterListIcon from '@mui/icons-material/FilterList';
+import { useEffect, useMemo } from 'react';
+import debounce from 'lodash.debounce';
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
+import AddIcon from '@mui/icons-material/Add';
+import { Link } from 'react-router-dom';
+export const CustomTableToolbar = ({ numSelected, onChange }) => {
+  const debouncedOnChange = useMemo(() => debounce(onChange, 300), [onChange]);
 
-export const CustomTableToolbar = ({
-  numSelected,
-  onChange,
-  debounce,
-  query,
-}) => {
+  useEffect(() => {
+    return () => {
+      debouncedOnChange.cancel();
+    };
+  }, [debouncedOnChange]);
+
   return (
     <Toolbar
       sx={{
@@ -51,7 +58,7 @@ export const CustomTableToolbar = ({
       ) : (
         <>
           <InputBase
-            onChange={debounce(onChange, 300)}
+            onChange={debouncedOnChange}
             type="text"
             sx={{ flex: '1 1 33%' }}
             startAdornment={
@@ -67,7 +74,18 @@ export const CustomTableToolbar = ({
               <FilterListIcon />
             </IconButton>
           </Tooltip>
-          <Button />
+          <Stack direction="row" spacing={2}>
+            <Button
+              to="/createAdmin"
+              component={Link}
+              color="success"
+              back
+              variant="contained"
+              startIcon={<AddIcon />}
+            >
+              New Admin
+            </Button>
+          </Stack>
         </>
       )}
     </Toolbar>
