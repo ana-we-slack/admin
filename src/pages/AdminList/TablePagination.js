@@ -1,13 +1,12 @@
 import { TablePagination } from '@mui/material';
 import adminApi from '../../api/admin';
 
-export const CustomTablePagination = ({
-  data,
-  rowsPerPage,
+export const CustomPagination = ({
   setRowsPerPage,
   run,
-  defaultData,
   query,
+  rowsPerPage,
+  data,
 }) => {
   const handleChangePage = (event, pageNumber) => {
     run(
@@ -28,9 +27,9 @@ export const CustomTablePagination = ({
     setRowsPerPage(newValue);
   };
 
-  const getPagination = () => {
-    if (data?.results.length > 0) {
-      return (
+  return (
+    <>
+      {data?.results.length > 0 && (
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
@@ -40,20 +39,7 @@ export const CustomTablePagination = ({
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-      );
-    } else if (defaultData?.results.length > 0) {
-      return (
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={defaultData?.pagination.count}
-          rowsPerPage={defaultData?.pagination.page_size}
-          page={+defaultData?.pagination.page_number - 1}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      );
-    }
-  };
-  return <>{getPagination()}</>;
+      )}
+    </>
+  );
 };

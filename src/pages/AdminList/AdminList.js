@@ -14,12 +14,17 @@ function AdminList() {
   const { data, run, status, error } = useAsync();
   const [query, setQuery] = useState('');
 
+  useEffect(() => {
+    run(adminApi.getAdmins({ page_size: rowsPerPage }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const onSearch = useCallback(
     (value) => {
       if (value) {
         run(adminApi.getAdmins({ search: value, page_size: rowsPerPage }));
       } else {
-        run(adminApi.getAdmins({ page_size: rowsPerPage }));
+        run(adminApi.getAdmins({ search: '', page_size: rowsPerPage }));
       }
     },
     [rowsPerPage, run]

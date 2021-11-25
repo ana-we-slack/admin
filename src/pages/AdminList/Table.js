@@ -2,11 +2,8 @@ import Table from '@mui/material/Table';
 import TableContainer from '@mui/material/TableContainer';
 import { EnhancedTableHead } from './TableHead';
 import { TableRows } from '../../pages/AdminList/TableRows';
-import { CustomTablePagination } from './TablePagination';
+import { CustomPagination } from './TablePagination';
 import Spinner from '../../components/spinner';
-import { useEffect } from 'react';
-import adminApi from '../../api/admin';
-import { useAsync } from '../../utils/useAsync';
 
 export const AdminTable = ({
   selected,
@@ -14,28 +11,11 @@ export const AdminTable = ({
   rowsPerPage,
   setRowsPerPage,
   data,
-  status,
-  error,
   run,
   query,
+  status,
+  error,
 }) => {
-  const {
-    data: defaultData,
-    run: defaultRun,
-    status: defaultStatus,
-    error: defaultError,
-  } = useAsync();
-
-  useEffect(() => {
-    defaultRun(adminApi.getAdmins({ page_size: rowsPerPage }));
-  }, []);
-
-  if (status === 'pending') {
-    return <Spinner />;
-  } else if (status === 'rejected') {
-    throw error;
-  }
-
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
       const newSelecteds = data?.results.map((n) => n._id);
@@ -67,6 +47,11 @@ export const AdminTable = ({
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
+  if (status === 'pending') {
+    return <Spinner />;
+  } else if (status === 'rejected') {
+    throw error;
+  }
   return (
     <>
       <TableContainer>
@@ -80,19 +65,15 @@ export const AdminTable = ({
             data={data}
             handleClick={handleClick}
             isSelected={isSelected}
-            defaultData={defaultData}
-            defaultStatus={defaultStatus}
-            defaultError={defaultError}
           />
         </Table>
       </TableContainer>
-      <CustomTablePagination
-        rowsPerPage={rowsPerPage}
+      <CustomPagination
         setRowsPerPage={setRowsPerPage}
-        data={data}
         run={run}
-        defaultData={defaultData}
         query={query}
+        rowsPerPage={rowsPerPage}
+        data={data}
       />
     </>
   );
