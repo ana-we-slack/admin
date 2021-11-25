@@ -7,7 +7,6 @@ import Container from '@mui/material/Container';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { Redirect } from 'react-router-dom';
 import { useAsync } from '../../utils/useAsync';
 import Spinner from '../../components/spinner';
 import { useHistory } from 'react-router-dom';
@@ -21,14 +20,7 @@ const schema = yup.object({
 });
 
 function Profile() {
-  const { data: profileData, run: profileRun, status, error } = useAsync();
-
-  const {
-    data: updateData,
-    error: updateError,
-    status: updateStatus,
-    run: updateRun,
-  } = useAsync();
+  const { data, run, status, error } = useAsync();
 
   const history = useHistory();
   const {
@@ -42,8 +34,8 @@ function Profile() {
   });
 
   useEffect(() => {
-    profileRun(profileApi.myProfile());
-  }, [profileRun]);
+    run(profileApi.myProfile());
+  }, [run]);
 
   const onCancel = () => {
     history.push('/adminList');
@@ -51,19 +43,19 @@ function Profile() {
 
   const onSubmit = (formData) => {
     if (formData) {
-      updateRun(profileApi.updateProfile(formData));
+      run(profileApi.updateProfile(formData));
     }
+    history.push('/adminList');
   };
 
-  if ([status, updateStatus].includes('pending')) {
+  if (status === 'pending') {
     return <Spinner />;
-  } else if ([status, updateStatus].includes('rejected')) {
-    throw error || updateError;
+  } else if (status === 'rejected') {
+    throw error;
   }
 
   return (
     <>
-      {!!updateData && <Redirect to="/adminList" />}
       <Container component="main" maxWidth="xs">
         <Box
           sx={{
@@ -76,7 +68,7 @@ function Profile() {
           <Typography component="h1" variant="h5">
             My Profile
           </Typography>
-          {profileData && (
+          {data && (
             <Box
               component="form"
               noValidate
@@ -86,7 +78,7 @@ function Profile() {
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
                   <TextField
-                    defaultValue={profileData.first_name}
+                    defaultValue={data.first_name}
                     error={!!errors.first_name}
                     helperText={errors.first_name?.message}
                     type="text"
@@ -102,7 +94,7 @@ function Profile() {
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <TextField
-                    defaultValue={profileData.last_name}
+                    defaultValue={data.last_name}
                     error={!!errors.last_name}
                     helperText={errors.last_name?.message}
                     type="text"
@@ -118,7 +110,7 @@ function Profile() {
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
-                    defaultValue={profileData.username}
+                    defaultValue={data.username}
                     error={!!errors.username}
                     helperText={errors.username?.message}
                     type="text"
@@ -134,7 +126,7 @@ function Profile() {
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
-                    defaultValue={profileData.email}
+                    defaultValue={data.email}
                     error={!!errors.email}
                     helperText={errors.email?.message}
                     type="email"

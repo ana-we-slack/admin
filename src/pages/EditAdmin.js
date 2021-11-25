@@ -7,7 +7,6 @@ import Container from '@mui/material/Container';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { Redirect } from 'react-router-dom';
 import { useAsync } from '../utils/useAsync';
 import adminApi from '../api/admin';
 import Spinner from '../components/spinner';
@@ -20,18 +19,7 @@ const schema = yup.object({
   email: yup.string().email().required(),
 });
 function EditAdmin() {
-  const {
-    data: profileData,
-    run: profileRun,
-    status: profileStatus,
-    error: profileError,
-  } = useAsync();
-  const {
-    data: editData,
-    error: editError,
-    status: editStatus,
-    run: editRun,
-  } = useAsync();
+  const { data, error, status, run } = useAsync();
   const history = useHistory();
   let { id } = useParams();
   const {
@@ -43,8 +31,8 @@ function EditAdmin() {
     mode: 'onBlur',
   });
   useEffect(() => {
-    profileRun(adminApi.getAdminById(id));
-  }, [id, profileRun]);
+    run(adminApi.getAdminById(id));
+  }, [id, run]);
 
   const onCancel = () => {
     history.push('/adminList');
@@ -52,19 +40,19 @@ function EditAdmin() {
 
   const onSubmit = (formData) => {
     if (formData) {
-      editRun(adminApi.updateAdmin(id, formData));
+      run(adminApi.updateAdmin(id, formData));
     }
+    history.push('/adminList');
   };
 
-  if ([profileStatus, editStatus].includes('pending')) {
+  if (status === 'pending') {
     return <Spinner />;
-  } else if ([profileStatus, editStatus].includes('rejected')) {
-    throw profileError || editError;
+  } else if (status === 'rejected') {
+    throw error;
   }
 
   return (
     <>
-      {!!editData && <Redirect to="/adminList" />}
       <Container component="main" maxWidth="xs">
         <Box
           sx={{
@@ -77,7 +65,7 @@ function EditAdmin() {
           <Typography component="h1" variant="h5">
             Edit Admin
           </Typography>
-          {profileData && (
+          {data && (
             <Box
               component="form"
               noValidate
@@ -87,7 +75,7 @@ function EditAdmin() {
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
                   <TextField
-                    defaultValue={profileData.first_name}
+                    defaultValue={data.first_name}
                     error={!!errors.first_name}
                     helperText={errors.first_name?.message}
                     type="text"
@@ -103,7 +91,7 @@ function EditAdmin() {
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <TextField
-                    defaultValue={profileData.last_name}
+                    defaultValue={data.last_name}
                     error={!!errors.last_name}
                     helperText={errors.last_name?.message}
                     type="text"
@@ -119,7 +107,7 @@ function EditAdmin() {
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
-                    defaultValue={profileData.username}
+                    defaultValue={data.username}
                     error={!!errors.username}
                     helperText={errors.username?.message}
                     type="text"
@@ -135,7 +123,7 @@ function EditAdmin() {
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
-                    defaultValue={profileData.email}
+                    defaultValue={data.email}
                     error={!!errors.email}
                     helperText={errors.email?.message}
                     type="email"

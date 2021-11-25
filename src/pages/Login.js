@@ -26,7 +26,12 @@ const schema = yup.object({
 });
 
 function Login() {
-  const { status, run, data, error } = useAsync();
+  const {
+    status: tokenStatus,
+    run: tokenRun,
+    data: tokenData,
+    error: tokenError,
+  } = useAsync();
   const {
     run: profileRun,
     data: profileData,
@@ -48,25 +53,25 @@ function Login() {
 
   const onSubmit = (formData) => {
     if (formData) {
-      run(authApi.login(formData.email, formData.password));
+      tokenRun(authApi.login(formData.email, formData.password));
     }
   };
   useEffect(() => {
-    if (data?.token) {
+    if (tokenData?.token) {
       profileRun(profileApi.myProfile());
     }
-  }, [data?.token, profileRun]);
+  }, [profileRun, tokenData?.token]);
 
   useEffect(() => {
-    if (data?.token || profileData) {
-      setAuthState({ token: data?.token, user: profileData });
+    if (tokenData?.token || profileData) {
+      setAuthState({ token: tokenData?.token, user: profileData });
     }
-  }, [data?.token, profileData, setAuthState]);
+  }, [profileData, setAuthState, tokenData?.token]);
 
-  if ([status, profileStatus].includes('pending')) {
+  if ([tokenStatus, profileStatus].includes('pending')) {
     return <Spinner />;
-  } else if ([status, profileStatus].includes('rejected')) {
-    throw error || profileError;
+  } else if ([tokenStatus, profileStatus].includes('rejected')) {
+    throw tokenError || profileError;
   }
   return (
     <>
