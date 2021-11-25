@@ -8,10 +8,10 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Redirect } from 'react-router-dom';
-import { useAsync } from '../utils/useAsync';
-import adminApi from '../api/admin';
-import Spinner from '../components/spinner';
-import { useHistory, useParams } from 'react-router-dom';
+import { useAsync } from '../../utils/useAsync';
+import Spinner from '../../components/spinner';
+import { useHistory } from 'react-router-dom';
+import profileApi from '../../api/profile';
 import { useEffect } from 'react';
 const schema = yup.object({
   first_name: yup.string().min(3).max(15).required(),
@@ -19,32 +19,31 @@ const schema = yup.object({
   username: yup.string().min(3).max(15).required(),
   email: yup.string().email().required(),
 });
-function EditAdmin() {
+
+function Profile() {
+  const { data: profileData, run: profileRun, status, error } = useAsync();
+
   const {
-    data: profileData,
-    run: profileRun,
-    status: profileStatus,
-    error: profileError,
+    data: updateData,
+    error: updateError,
+    status: updateStatus,
+    run: updateRun,
   } = useAsync();
-  const {
-    data: editData,
-    error: editError,
-    status: editStatus,
-    run: editRun,
-  } = useAsync();
+
   const history = useHistory();
-  let { id } = useParams();
   const {
     handleSubmit,
     register,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
+
     mode: 'onBlur',
   });
+
   useEffect(() => {
-    profileRun(adminApi.getAdminById(id));
-  }, [id, profileRun]);
+    profileRun(profileApi.myProfile());
+  }, [profileRun]);
 
   const onCancel = () => {
     history.push('/adminList');
@@ -52,19 +51,19 @@ function EditAdmin() {
 
   const onSubmit = (formData) => {
     if (formData) {
-      editRun(adminApi.updateAdmin(id, formData));
+      updateRun(profileApi.updateProfile(formData));
     }
   };
 
-  if ([profileStatus, editStatus].includes('pending')) {
+  if ([status, updateStatus].includes('pending')) {
     return <Spinner />;
-  } else if ([profileStatus, editStatus].includes('rejected')) {
-    throw profileError || editError;
+  } else if ([status, updateStatus].includes('rejected')) {
+    throw error || updateError;
   }
 
   return (
     <>
-      {!!editData && <Redirect to="/adminList" />}
+      {!!updateData && <Redirect to="/adminList" />}
       <Container component="main" maxWidth="xs">
         <Box
           sx={{
@@ -75,7 +74,7 @@ function EditAdmin() {
           }}
         >
           <Typography component="h1" variant="h5">
-            Edit Admin
+            My Profile
           </Typography>
           {profileData && (
             <Box
@@ -149,6 +148,7 @@ function EditAdmin() {
                     color="success"
                   />
                 </Grid>
+
                 <Grid item xs={12} sm={6}>
                   <Button
                     fullWidth
@@ -158,7 +158,7 @@ function EditAdmin() {
                     variant="contained"
                     sx={{ mt: 3, mb: 2 }}
                   >
-                    Add Admin
+                    Edit
                   </Button>
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -181,4 +181,4 @@ function EditAdmin() {
     </>
   );
 }
-export default EditAdmin;
+export default Profile;

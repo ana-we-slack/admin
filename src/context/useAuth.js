@@ -1,5 +1,5 @@
 import { useContext, createContext, useState, useCallback } from 'react';
-
+import { useHistory } from 'react-router-dom';
 const authContext = createContext();
 
 export function ProvideAuth({ children }) {
@@ -12,6 +12,7 @@ export const useAuth = () => {
 };
 
 export function useProvideAuth() {
+  const history = useHistory();
   const token = localStorage.getItem('Token');
   const user = localStorage.getItem('User');
 
@@ -29,8 +30,19 @@ export function useProvideAuth() {
     });
   }, []);
 
+  const logout = () => {
+    localStorage.removeItem('Token');
+    localStorage.removeItem('User');
+    setAuthState({
+      token: null,
+      user: null,
+    });
+    history?.push('/');
+  };
+
   return {
     authState,
     setAuthState: setAuthInfo,
+    logout,
   };
 }
