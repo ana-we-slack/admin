@@ -8,10 +8,10 @@ const updateProfile = (body) => {
   return axios.patch(`/profile`, body);
 };
 
-const updateProfilePassword = (password, oldPassword) => {
+const updateProfilePassword = (old_password, password) => {
   return axios.patch(`/profile/password`, {
+    old_password,
     password,
-    old_password: oldPassword,
   });
 };
 

@@ -47,12 +47,14 @@ function ChangePassword() {
   };
   const onSubmit = (formData) => {
     if (formData) {
+      console.log(formData);
       run(
         profileApi.updateProfilePassword(
           formData.old_password,
           formData.password
         )
       );
+      history.push('/adminList');
     }
   };
   if (status === 'pending') {
