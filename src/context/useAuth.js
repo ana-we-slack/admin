@@ -14,28 +14,20 @@ export const useAuth = () => {
 export function useProvideAuth() {
   const history = useHistory();
   const token = localStorage.getItem('Token');
-  const user = localStorage.getItem('User');
 
-  const [authState, setAuthState] = useState({
-    token,
-    user,
-  });
+  const [authState, setAuthState] = useState({ token });
 
-  const setAuthInfo = useCallback(({ token, user }) => {
+  const setAuthInfo = useCallback((token) => {
     localStorage.setItem('Token', token);
-    localStorage.setItem('User', JSON.stringify(user));
     setAuthState({
       token,
-      user,
     });
   }, []);
 
   const logout = () => {
     localStorage.removeItem('Token');
-    localStorage.removeItem('User');
     setAuthState({
       token: null,
-      user: null,
     });
     history?.push('/');
   };

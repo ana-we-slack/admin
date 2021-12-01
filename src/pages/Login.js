@@ -2,7 +2,6 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -18,8 +17,8 @@ import { useAsync } from '../utils/useAsync';
 import authApi from '../api/auth';
 import Spinner from '../components/spinner';
 import { useAuth } from '../context/useAuth';
-import { Redirect } from 'react-router-dom';
-import profileApi from '../api/profile';
+import Link from '@mui/material/Link';
+import { Redirect, Link as RouterLink } from 'react-router-dom';
 const schema = yup.object({
   email: yup.string().email().required(),
   password: yup.string().min(8).max(32).required(),
@@ -32,12 +31,7 @@ function Login() {
     data: tokenData,
     error: tokenError,
   } = useAsync();
-  const {
-    run: profileRun,
-    data: profileData,
-    status: profileStatus,
-    error: profileError,
-  } = useAsync();
+
   const { setAuthState, authState } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const onPasswordIconClick = () => {
@@ -56,26 +50,21 @@ function Login() {
       tokenRun(authApi.login(formData.email, formData.password));
     }
   };
+
   useEffect(() => {
     if (tokenData?.token) {
-      profileRun(profileApi.myProfile());
+      setAuthState(tokenData?.token);
     }
-  }, [profileRun, tokenData?.token]);
+  }, [setAuthState, tokenData?.token]);
 
-  useEffect(() => {
-    if (tokenData?.token || profileData) {
-      setAuthState({ token: tokenData?.token, user: profileData });
-    }
-  }, [profileData, setAuthState, tokenData?.token]);
-
-  if ([tokenStatus, profileStatus].includes('pending')) {
+  if (tokenStatus === 'pending') {
     return <Spinner />;
-  } else if ([tokenStatus, profileStatus].includes('rejected')) {
-    throw tokenError || profileError;
+  } else if (tokenStatus === 'rejected') {
+    throw tokenError;
   }
   return (
     <>
-      {!!authState.user && <Redirect to="/adminList" />}
+      {!!authState.token && <Redirect to="/adminList" />}
       <Grid
         container
         spacing={0}
@@ -153,7 +142,8 @@ function Login() {
                 </Grid>
                 <Grid item alignItems="self-end" mt={1}>
                   <Link
-                    href="#"
+                    component={RouterLink}
+                    to="/forgetPassword"
                     variant="body2"
                     underline="none"
                     borderColor="green"

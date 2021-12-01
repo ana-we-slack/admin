@@ -41,7 +41,7 @@ export default function MenuAppBar() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      {!!authState.user && (
+      {!!authState.token && (
         <AppBar position="sticky" color="success">
           <Toolbar>
             <Typography

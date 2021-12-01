@@ -7,7 +7,7 @@ export default function ProtectedRoute({ component: Component, ...rest }) {
     <Route
       {...rest}
       render={(props) => {
-        if (!!authState.user) {
+        if (!!authState.token) {
           return <Component />;
         }
         return (
