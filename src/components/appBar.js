@@ -7,14 +7,19 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import { ListItemIcon, ListItemText } from '@mui/material';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import PersonIcon from '@mui/icons-material/Person';
 import Avatar from '@mui/material/Avatar';
 import { useAuth } from '../context/useAuth';
 import { useHistory } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
+import { useAsync } from '../utils/useAsync';
+import profileApi from '../api/profile';
+import Spinner from './spinner';
 export default function MenuAppBar() {
   const history = useHistory();
+  const { data, run, status, error } = useAsync();
+
   const { logout, authState } = useAuth();
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -32,13 +37,21 @@ export default function MenuAppBar() {
     handleClose();
   };
 
+  useEffect(() => {
+    run(profileApi.myProfile());
+  }, [run, authState.token]);
+
   const handleProfile = useCallback(() => {
     history.push({
       pathname: '/profile',
     });
     handleClose();
   }, [history]);
-
+  if (status === 'pending') {
+    return <Spinner />;
+  } else if (status === 'error') {
+    throw error;
+  }
   return (
     <Box sx={{ flexGrow: 1 }}>
       {!!authState.token && (
@@ -62,7 +75,7 @@ export default function MenuAppBar() {
                 onClick={handleMenu}
                 color="inherit"
               >
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+                <Avatar alt="profile-image" src={data?.avatar} />
               </IconButton>
 
               <Menu

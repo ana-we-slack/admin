@@ -32,12 +32,7 @@ export const TableRows = ({ handleClick, isSelected, data }) => {
               </TableCell>
               <TableCell component="th" id={labelId} scope="row" padding="none">
                 <CardHeader
-                  avatar={
-                    <Avatar
-                      alt="Remy Sharp"
-                      src="/static/images/avatar/1.jpg"
-                    />
-                  }
+                  avatar={<Avatar alt="admin-avatar" src={row.avatar} />}
                   title={row.email}
                 />
               </TableCell>
