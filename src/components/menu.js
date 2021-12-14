@@ -5,9 +5,16 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import EditIcon from '@mui/icons-material/Edit';
 import { useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
+import ConfirmDialog from './confirmDialog';
 
-export default function ThreeDotsMenu({ id }) {
+export default function ThreeDotsMenu({ id, run, rowPerPage }) {
+  const [openDialog, setOpenDialog] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClickOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
   let history = useHistory();
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -25,6 +32,15 @@ export default function ThreeDotsMenu({ id }) {
 
   return (
     <>
+      {openDialog && (
+        <ConfirmDialog
+          rowPerPage={rowPerPage}
+          run={run}
+          id={id}
+          setOpenDialog={setOpenDialog}
+          openDialog={openDialog}
+        />
+      )}
       <div>
         <IconButton
           aria-label="more"
@@ -55,7 +71,7 @@ export default function ThreeDotsMenu({ id }) {
             <ListItemIcon>
               <DeleteIcon />
             </ListItemIcon>
-            <ListItemText>Delete</ListItemText>
+            <ListItemText onClick={handleClickOpenDialog}>Delete</ListItemText>
           </MenuItem>
         </Menu>
       </div>

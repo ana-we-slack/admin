@@ -4,7 +4,13 @@ import TableRow from '@mui/material/TableRow';
 import { Avatar, CardHeader, Checkbox } from '@mui/material';
 import ThreeDotsMenu from '../../components/menu';
 
-export const TableRows = ({ handleClick, isSelected, data }) => {
+export const TableRows = ({
+  handleClick,
+  isSelected,
+  data,
+  run,
+  rowPerPage,
+}) => {
   return (
     <TableBody>
       {data?.results.length > 0 &&
@@ -45,7 +51,7 @@ export const TableRows = ({ handleClick, isSelected, data }) => {
                 align="center"
                 onClick={(e) => e.stopPropagation()}
               >
-                <ThreeDotsMenu id={row._id} />{' '}
+                <ThreeDotsMenu run={run} id={row._id} />{' '}
               </TableCell>
             </TableRow>
           );

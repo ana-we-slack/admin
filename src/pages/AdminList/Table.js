@@ -65,6 +65,8 @@ export const AdminTable = ({
             data={data}
             handleClick={handleClick}
             isSelected={isSelected}
+            run={run}
+            rowsPerPage={rowsPerPage}
           />
         </Table>
       </TableContainer>

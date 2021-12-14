@@ -47,7 +47,6 @@ function ChangePassword() {
   };
   const onSubmit = (formData) => {
     if (formData) {
-      console.log(formData);
       run(
         profileApi.updateProfilePassword(
           formData.old_password,
